@@ -19,7 +19,7 @@ resource "azurerm_resource_group" "myterraformgroup" {
 # Create virtual network
 resource "azurerm_virtual_network" "myterraformnetwork" {
     name                = "myVnet"
-    address_space       = ["10.0.0.0/16"]
+    address_space       = ["10.0.1.0/24"]
     location            = "westeurope"
     resource_group_name = "${azurerm_resource_group.myterraformgroup.name}"
 
@@ -73,13 +73,13 @@ resource "azurerm_network_security_group" "myterraformnsg" {
 
 # Create network interface
 resource "azurerm_network_interface" "myterraformnic" {
-    name                      = "myNIC"
+    name                      = "myNIC-myVM-${count.index + 1}"
     location                  = "westeurope"
     resource_group_name       = "${azurerm_resource_group.myterraformgroup.name}"
     network_security_group_id = "${azurerm_network_security_group.myterraformnsg.id}"
 
     ip_configuration {
-        name                          = "myNicConfiguration"
+        name                          = "myNicConfiguration-myVM-${count.index + 1}"
         subnet_id                     = "${azurerm_subnet.myterraformsubnet.id}"
         private_ip_address_allocation = "Dynamic"
         public_ip_address_id          = "${azurerm_public_ip.myterraformpublicip.id}"
@@ -123,7 +123,7 @@ resource "azurerm_virtual_machine" "myterraformvm" {
     vm_size               = "Standard_DS1_v2"
 
     storage_os_disk {
-        name              = "myOsDisk"
+        name              = "myOsDisk-myVM-${count.index + 1}"
         caching           = "ReadWrite"
         create_option     = "FromImage"
         managed_disk_type = "Premium_LRS"
@@ -137,7 +137,7 @@ resource "azurerm_virtual_machine" "myterraformvm" {
     }
 
     os_profile {
-        computer_name  = "myvm"
+        computer_name  = "myVM-${count.index + 1}"
         admin_username = "mladen"
         admin_password = "P@ssw0rd1234"
     }
