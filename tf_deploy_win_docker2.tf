@@ -116,6 +116,7 @@ resource "azurerm_storage_account" "mystorageaccount" {
 
 # Create virtual machine
 resource "azurerm_virtual_machine" "myterraformvm" {
+    count = "2"
     name                  = "myVM-${count.index + 1}"
     location              = "westeurope"
     resource_group_name   = "${azurerm_resource_group.myterraformgroup.name}"
