@@ -81,6 +81,7 @@ resource "azurerm_network_interface" "myterraformnic" {
     network_security_group_id = "${azurerm_network_security_group.myterraformnsg.id}"
 
     ip_configuration {
+        count = "2"
         name                          = "myNicConfiguration-myVM${count.index}"
         subnet_id                     = "${azurerm_subnet.myterraformsubnet.id}"
         private_ip_address_allocation = "Dynamic"
