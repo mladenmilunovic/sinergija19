@@ -1,10 +1,10 @@
 # Configure the Microsoft Azure Provider
-provider "azurerm" {
-    subscription_id = "4e07c97e-fda4-4cf1-89a4-6fd1e7e5faf6"
-    client_id       = "d555bf26-1db7-4c4f-bb4c-f76acd23a29f"
-    client_secret   = "eec507c7-17db-41aa-82e3-93987e525826"
-    tenant_id       = "46f9fc40-f452-48e0-9661-ca193655481f"
-}
+# provider "azurerm" {
+#     subscription_id = "4e07c97e-fda4-4cf1-89a4-6fd1e7e5faf6"
+#     client_id       = "d555bf26-1db7-4c4f-bb4c-f76acd23a29f"
+#     client_secret   = "eec507c7-17db-41aa-82e3-93987e525826"
+#     tenant_id       = "46f9fc40-f452-48e0-9661-ca193655481f"
+# }
 
 # Create a resource group if it doesn’t exist
 resource "azurerm_resource_group" "myterraformgroup" {
@@ -74,13 +74,13 @@ resource "azurerm_network_security_group" "myterraformnsg" {
 # Create network interface
 resource "azurerm_network_interface" "myterraformnic" {
     count = "2"
-    name                      = "myNIC-myVM-${count.index + 1}"
+    name                      = "myNIC-myVM${count.index}"
     location                  = "westeurope"
     resource_group_name       = "${azurerm_resource_group.myterraformgroup.name}"
     network_security_group_id = "${azurerm_network_security_group.myterraformnsg.id}"
 
     ip_configuration {
-        name                          = "myNicConfiguration-myVM-${count.index + 1}"
+        name                          = "myNicConfiguration-myVM"
         subnet_id                     = "${azurerm_subnet.myterraformsubnet.id}"
         private_ip_address_allocation = "Dynamic"
         public_ip_address_id          = "${azurerm_public_ip.myterraformpublicip.id}"
@@ -117,14 +117,14 @@ resource "azurerm_storage_account" "mystorageaccount" {
 # Create virtual machine
 resource "azurerm_virtual_machine" "myterraformvm" {
     count = "2"
-    name                  = "myVM-${count.index + 1}"
+    name                  = "myVM-${count.index}"
     location              = "westeurope"
     resource_group_name   = "${azurerm_resource_group.myterraformgroup.name}"
     network_interface_ids = ["${azurerm_network_interface.myterraformnic.id}"]
-    vm_size               = "Standard_DS1_v2"
+    vm_size               = "Standard_D2S_v3"
 
     storage_os_disk {
-        name              = "myOsDisk-myVM-${count.index + 1}"
+        name              = "myOsDisk-myVM-${count.index}"
         caching           = "ReadWrite"
         create_option     = "FromImage"
         managed_disk_type = "Premium_LRS"
@@ -138,7 +138,7 @@ resource "azurerm_virtual_machine" "myterraformvm" {
     }
 
     os_profile {
-        computer_name  = "myVM-${count.index + 1}"
+        computer_name  = "myVM-${count.index}"
         admin_username = "mladen"
         admin_password = "P@ssw0rd1234"
     }
