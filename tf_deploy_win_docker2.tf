@@ -141,6 +141,11 @@ resource "azurerm_virtual_machine" "myterraformvm" {
         admin_password = "Password1234!"
     }
 
+    os_profile_windows_config {
+        enable_automatic_upgrades = false
+        provision_vm_agent = true
+    }
+
     boot_diagnostics {
         enabled = "true"
         storage_uri = "${azurerm_storage_account.mystorageaccount.primary_blob_endpoint}"
