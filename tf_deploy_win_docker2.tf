@@ -120,7 +120,8 @@ resource "azurerm_virtual_machine" "myterraformvm" {
     name                  = "myVM-${count.index}"
     location              = "westeurope"
     resource_group_name   = "${azurerm_resource_group.myterraformgroup.name}"
-    network_interface_ids = ["${azurerm_network_interface.myterraformnic.id}"]
+    network_interface_ids = ["${element(azurerm_network_interface.myterraformnic.*.id, count.index)}"]
+   #network_interface_ids = ["${element(azurerm_network_interface.test.*.id, count.index)}"]
     vm_size               = "Standard_D2S_v3"
 
     storage_os_disk {
