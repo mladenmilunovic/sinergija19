@@ -6,8 +6,6 @@ provider "azurerm" {
     tenant_id       = "46f9fc40-f452-48e0-9661-ca193655481f"
 }
 
-count = "2"
-
 # Create a resource group if it doesn’t exist
 resource "azurerm_resource_group" "myterraformgroup" {
     name     = "myResourceGroup"
@@ -75,6 +73,7 @@ resource "azurerm_network_security_group" "myterraformnsg" {
 
 # Create network interface
 resource "azurerm_network_interface" "myterraformnic" {
+    count = "2"
     name                      = "myNIC-myVM-${count.index + 1}"
     location                  = "westeurope"
     resource_group_name       = "${azurerm_resource_group.myterraformgroup.name}"
