@@ -133,6 +133,7 @@ resource "azurerm_virtual_machine" "myterraformvm" {
     
     boot_diagnostics {
         enabled = "false"
+        storage_uri = "${azurerm_storage_account.mystorageaccount.primary_blob_endpoint}"
         }
 
     tags = {
