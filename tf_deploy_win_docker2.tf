@@ -115,8 +115,8 @@ resource "azurerm_storage_account" "mystorageaccount" {
 
 # Create virtual machine
 resource "azurerm_virtual_machine" "myterraformvm" {
-    count = "3"
-    name                  = "myVM"
+    count = "2"
+    name                  = "myVM-${count.index + 1}"
     location              = "westeurope"
     resource_group_name   = "${azurerm_resource_group.myterraformgroup.name}"
     network_interface_ids = ["${azurerm_network_interface.myterraformnic.id}"]
@@ -139,7 +139,7 @@ resource "azurerm_virtual_machine" "myterraformvm" {
     os_profile {
         computer_name  = "myvm"
         admin_username = "mladen"
-        admin_password = "Password1234!"
+        admin_password = "P@ssw0rd1234"
     }
 
     os_profile_windows_config {
