@@ -141,10 +141,11 @@ resource "azurerm_virtual_machine" "myterraformvm" {
 
     os_profile_linux_config {
         disable_password_authentication = true
-        ssh_keys {
+        ssh_keys = [{
             path     = "/home/mladen/.ssh/authorized_keys"
-            key_data = "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAgldy5Gr3lFwAO7A5ZCrjynUESVhbQFJ0E5hgl42Y6EKVZ9p1HLSdSZSIwemzxjZZl85kFECQaag882MHDlPU1k/YfBPnKL2gYimsDd82XT9zksT1IblqsxSyy6mQruE8mGw3jHpvh3PjeYGMpsyJYcuoFtvyY80wa6tj7n98/S7gwCevt0t1oZS2eLiNXSdaB2ievp5z+LtJIDhjsod7WqLNmxuK56Te+d7xMRLryEye2BUwQgJtnPUtyPXHyj/Cr4vp1HViIa8B/iZbod0mDJ68mapjzXOeGwOWMZOd/hjWR55OO2M/YwmyigwUp1sX2QuyYXwev4yWt5hNSC/Agw==h"
-        }
+            key_data = "${file("./public_key.pub")}"
+            }]
+            #key_data = "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAgldy5Gr3lFwAO7A5ZCrjynUESVhbQFJ0E5hgl42Y6EKVZ9p1HLSdSZSIwemzxjZZl85kFECQaag882MHDlPU1k/YfBPnKL2gYimsDd82XT9zksT1IblqsxSyy6mQruE8mGw3jHpvh3PjeYGMpsyJYcuoFtvyY80wa6tj7n98/S7gwCevt0t1oZS2eLiNXSdaB2ievp5z+LtJIDhjsod7WqLNmxuK56Te+d7xMRLryEye2BUwQgJtnPUtyPXHyj/Cr4vp1HViIa8B/iZbod0mDJ68mapjzXOeGwOWMZOd/hjWR55OO2M/YwmyigwUp1sX2QuyYXwev4yWt5hNSC/Agw==h"
     }
 
     boot_diagnostics {
