@@ -113,14 +113,14 @@ resource "azurerm_storage_account" "mystorageaccount" {
 # Create virtual machine
 resource "azurerm_virtual_machine" "myterraformvm" {
     count = "${var.countvalue}"
-    name                  = "myVM-${count.index}"
+    name                  = "myWinVM-${count.index}"
     location              = "westeurope"
     resource_group_name   = "${azurerm_resource_group.myterraformgroup.name}"
     network_interface_ids = ["${element(azurerm_network_interface.myterraformnic.*.id, count.index)}"]
     vm_size               = "Standard_D2S_v3"
 
     storage_os_disk {
-        name              = "myOsDisk-myVM-${count.index}"
+        name              = "myOsDisk-myWinVM-${count.index}"
         caching           = "ReadWrite"
         create_option     = "FromImage"
         managed_disk_type = "Premium_LRS"
@@ -134,7 +134,7 @@ resource "azurerm_virtual_machine" "myterraformvm" {
     }
 
     os_profile {
-        computer_name  = "myVM-${count.index}"
+        computer_name  = "myWinVM-${count.index}"
         admin_username = "mladen"
         admin_password = "P@ssw0rd1234"
     }
