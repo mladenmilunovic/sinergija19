@@ -74,6 +74,7 @@ resource "azurerm_network_security_group" "myterraformnsg" {
 
 # Create network interface
 resource "azurerm_network_interface" "myterraformnic" {
+    count = "2"
     name                      = "myNIC-myVM${count.index}"
     location                  = "westeurope"
     resource_group_name       = "${azurerm_resource_group.myterraformgroup.name}"
