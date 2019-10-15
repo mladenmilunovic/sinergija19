@@ -1,14 +1,9 @@
-# Configure the Microsoft Azure Provider
-provider "azurerm" {
-    subscription_id = "4e07c97e-fda4-4cf1-89a4-6fd1e7e5faf6"
-    client_id       = "d555bf26-1db7-4c4f-bb4c-f76acd23a29f"
-    client_secret   = "eec507c7-17db-41aa-82e3-93987e525826"
-    tenant_id       = "46f9fc40-f452-48e0-9661-ca193655481f"
-}
+#Specify the number of instances
+variable "countvalue" {}
 
 # Create a resource group if it doesn’t exist
 resource "azurerm_resource_group" "myterraformgroup" {
-    name     = "myResourceGroup"
+    name     = "myLinuxResourceGroup"
     location = "westeurope"
 
     tags = {
@@ -19,7 +14,7 @@ resource "azurerm_resource_group" "myterraformgroup" {
 # Create virtual network
 resource "azurerm_virtual_network" "myterraformnetwork" {
     name                = "myVnet"
-    address_space       = ["10.0.0.0/16"]
+    address_space       = ["10.0.3.0/24"]
     location            = "westeurope"
     resource_group_name = "${azurerm_resource_group.myterraformgroup.name}"
 
@@ -33,12 +28,13 @@ resource "azurerm_subnet" "myterraformsubnet" {
     name                 = "mySubnet"
     resource_group_name  = "${azurerm_resource_group.myterraformgroup.name}"
     virtual_network_name = "${azurerm_virtual_network.myterraformnetwork.name}"
-    address_prefix       = "10.0.1.0/24"
+    address_prefix       = "10.0.3.0/24"
 }
 
 # Create public IPs
 resource "azurerm_public_ip" "myterraformpublicip" {
-    name                         = "myPublicIP"
+    count =  "${var.countvalue}"
+    name                         = "myPublicIP${count.index}"
     location                     = "westeurope"
     resource_group_name          = "${azurerm_resource_group.myterraformgroup.name}"
     allocation_method            = "Dynamic"
@@ -73,7 +69,8 @@ resource "azurerm_network_security_group" "myterraformnsg" {
 
 # Create network interface
 resource "azurerm_network_interface" "myterraformnic" {
-    name                      = "myNIC"
+    count = "${var.countvalue}"
+    name                      = "myNIC-myVM${count.index}"
     location                  = "westeurope"
     resource_group_name       = "${azurerm_resource_group.myterraformgroup.name}"
     network_security_group_id = "${azurerm_network_security_group.myterraformnsg.id}"
@@ -115,14 +112,15 @@ resource "azurerm_storage_account" "mystorageaccount" {
 
 # Create virtual machine
 resource "azurerm_virtual_machine" "myterraformvm" {
-    name                  = "myVM"
+    count = "${var.countvalue}"
+    name                  = "myVM-${count.index}"
     location              = "westeurope"
     resource_group_name   = "${azurerm_resource_group.myterraformgroup.name}"
     network_interface_ids = ["${azurerm_network_interface.myterraformnic.id}"]
     vm_size               = "Standard_DS1_v2"
 
     storage_os_disk {
-        name              = "myOsDisk"
+        name              = "myOsDisk-myVM-${count.index}"
         caching           = "ReadWrite"
         create_option     = "FromImage"
         managed_disk_type = "Premium_LRS"
@@ -131,18 +129,22 @@ resource "azurerm_virtual_machine" "myterraformvm" {
     storage_image_reference {
         publisher = "Canonical"
         offer     = "UbuntuServer"
-        sku       = "16.04.0-LTS"
+        sku       = "18.04-LTS"
         version   = "latest"
     }
 
     os_profile {
-        computer_name  = "myvm"
+        computer_name  = "myVM-${count.index}"
         admin_username = "mladen"
-        admin_password = "Password1234!"
+        #admin_password = "P@ssw0rd1234"
     }
 
     os_profile_linux_config {
-        disable_password_authentication = false
+        disable_password_authentication = true
+        ssh_keys {
+            path     = "/home/mladen/.ssh/authorized_keys"
+            key_data = "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAgldy5Gr3lFwAO7A5ZCrjynUESVhbQFJ0E5hgl42Y6EKVZ9p1HLSdSZSIwemzxjZZl85kFECQaag882MHDlPU1k/YfBPnKL2gYimsDd82XT9zksT1IblqsxSyy6mQruE8mGw3jHpvh3PjeYGMpsyJYcuoFtvyY80wa6tj7n98/S7gwCevt0t1oZS2eLiNXSdaB2ievp5z+LtJIDhjsod7WqLNmxuK56Te+d7xMRLryEye2BUwQgJtnPUtyPXHyj/Cr4vp1HViIa8B/iZbod0mDJ68mapjzXOeGwOWMZOd/hjWR55OO2M/YwmyigwUp1sX2QuyYXwev4yWt5hNSC/Agw==h"
+        }
     }
 
     boot_diagnostics {
