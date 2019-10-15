@@ -6,6 +6,8 @@
 #     tenant_id       = "46f9fc40-f452-48e0-9661-ca193655481f"
 # }
 
+countvalue = "2"
+
 # Create a resource group if it doesn’t exist
 resource "azurerm_resource_group" "myterraformgroup" {
     name     = "myResourceGroup"
@@ -38,7 +40,7 @@ resource "azurerm_subnet" "myterraformsubnet" {
 
 # Create public IPs
 resource "azurerm_public_ip" "myterraformpublicip" {
-    count = "2"
+    count = "$countvalue"
     name                         = "myPublicIP${count.index}"
     location                     = "westeurope"
     resource_group_name          = "${azurerm_resource_group.myterraformgroup.name}"
@@ -74,7 +76,7 @@ resource "azurerm_network_security_group" "myterraformnsg" {
 
 # Create network interface
 resource "azurerm_network_interface" "myterraformnic" {
-    count = "2"
+    count = "$countvalue"
     name                      = "myNIC-myVM${count.index}"
     location                  = "westeurope"
     resource_group_name       = "${azurerm_resource_group.myterraformgroup.name}"
@@ -118,7 +120,7 @@ resource "azurerm_storage_account" "mystorageaccount" {
 
 # Create virtual machine
 resource "azurerm_virtual_machine" "myterraformvm" {
-    count = "2"
+    count = "$countvalue"
     name                  = "myVM-${count.index}"
     location              = "westeurope"
     resource_group_name   = "${azurerm_resource_group.myterraformgroup.name}"
