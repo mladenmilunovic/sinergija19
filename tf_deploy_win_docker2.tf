@@ -40,7 +40,7 @@ resource "azurerm_subnet" "myterraformsubnet" {
 
 # Create public IPs
 resource "azurerm_public_ip" "myterraformpublicip" {
-    count = "$countvalue"
+    count =  "${var.countvalue}"
     name                         = "myPublicIP${count.index}"
     location                     = "westeurope"
     resource_group_name          = "${azurerm_resource_group.myterraformgroup.name}"
@@ -76,7 +76,7 @@ resource "azurerm_network_security_group" "myterraformnsg" {
 
 # Create network interface
 resource "azurerm_network_interface" "myterraformnic" {
-    count = "$countvalue"
+    count = "${var.countvalue}"
     name                      = "myNIC-myVM${count.index}"
     location                  = "westeurope"
     resource_group_name       = "${azurerm_resource_group.myterraformgroup.name}"
@@ -120,7 +120,7 @@ resource "azurerm_storage_account" "mystorageaccount" {
 
 # Create virtual machine
 resource "azurerm_virtual_machine" "myterraformvm" {
-    count = "$countvalue"
+    count = "${var.countvalue}"
     name                  = "myVM-${count.index}"
     location              = "westeurope"
     resource_group_name   = "${azurerm_resource_group.myterraformgroup.name}"
