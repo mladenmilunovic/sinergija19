@@ -6,7 +6,7 @@
 #     tenant_id       = "46f9fc40-f452-48e0-9661-ca193655481f"
 # }
 
-countvalue = "2"
+variable "countvalue" {}
 
 # Create a resource group if it doesn’t exist
 resource "azurerm_resource_group" "myterraformgroup" {
