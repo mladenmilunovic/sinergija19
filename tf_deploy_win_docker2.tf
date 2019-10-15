@@ -1,16 +1,9 @@
-# Configure the Microsoft Azure Provider
-# provider "azurerm" {
-#     subscription_id = "4e07c97e-fda4-4cf1-89a4-6fd1e7e5faf6"
-#     client_id       = "d555bf26-1db7-4c4f-bb4c-f76acd23a29f"
-#     client_secret   = "eec507c7-17db-41aa-82e3-93987e525826"
-#     tenant_id       = "46f9fc40-f452-48e0-9661-ca193655481f"
-# }
-
+#specify number of instances as variable
 variable "countvalue" {}
 
 # Create a resource group if it doesn’t exist
 resource "azurerm_resource_group" "myterraformgroup" {
-    name     = "myResourceGroup"
+    name     = "myWindowsResourceGroup"
     location = "westeurope"
 
     tags = {
@@ -21,7 +14,7 @@ resource "azurerm_resource_group" "myterraformgroup" {
 # Create virtual network
 resource "azurerm_virtual_network" "myterraformnetwork" {
     name                = "myVnet"
-    address_space       = ["10.0.1.0/24"]
+    address_space       = ["10.0.2.0/24"]
     location            = "westeurope"
     resource_group_name = "${azurerm_resource_group.myterraformgroup.name}"
 
@@ -35,7 +28,7 @@ resource "azurerm_subnet" "myterraformsubnet" {
     name                 = "mySubnet"
     resource_group_name  = "${azurerm_resource_group.myterraformgroup.name}"
     virtual_network_name = "${azurerm_virtual_network.myterraformnetwork.name}"
-    address_prefix       = "10.0.1.0/24"
+    address_prefix       = "10.0.2.0/24"
 }
 
 # Create public IPs
@@ -87,7 +80,6 @@ resource "azurerm_network_interface" "myterraformnic" {
         subnet_id                     = "${azurerm_subnet.myterraformsubnet.id}"
         private_ip_address_allocation = "Dynamic"
         public_ip_address_id          = "${element(azurerm_public_ip.myterraformpublicip.*.id, count.index)}"
-        #"${azurerm_public_ip.myterraformpublicip.id}"
     }
 
     tags = {
