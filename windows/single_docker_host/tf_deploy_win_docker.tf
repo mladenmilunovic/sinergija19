@@ -114,7 +114,7 @@ resource "azurerm_storage_account" "mystorageaccount" {
 
 # Create virtual machine
 resource "azurerm_virtual_machine" "myterraformvm" {
-    name                  = "Server2016Docker"
+    name                  = "2016Docker"
     location              = "westeurope"
     resource_group_name   = "${azurerm_resource_group.myterraformgroup.name}"
     network_interface_ids = ["${azurerm_network_interface.myterraformnic.id}"]
@@ -138,7 +138,7 @@ resource "azurerm_virtual_machine" "myterraformvm" {
     }
 
     os_profile {
-        computer_name  = "Server2016Docker"
+        computer_name  = "2016Docker"
         admin_username = "mladen"
         admin_password = "P@ssw0rd1234"
     }
