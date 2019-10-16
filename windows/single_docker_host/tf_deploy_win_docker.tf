@@ -146,6 +146,7 @@ resource "azurerm_virtual_machine" "myterraformvm" {
     os_profile_windows_config {
         enable_automatic_upgrades = false
         provision_vm_agent = true
+    }
     
     boot_diagnostics {
         enabled = "false"
@@ -154,6 +155,5 @@ resource "azurerm_virtual_machine" "myterraformvm" {
 
     tags = {
         environment = "Terraform Demo"
-        }
     }
 }
