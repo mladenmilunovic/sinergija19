@@ -142,6 +142,10 @@ resource "azurerm_virtual_machine" "myterraformvm" {
         admin_username = "mladen"
         admin_password = "P@ssw0rd1234"
     }
+
+    os_profile_windows_config {
+        enable_automatic_upgrades = false
+        provision_vm_agent = true
     
     boot_diagnostics {
         enabled = "false"
