@@ -13,7 +13,7 @@ resource "azurerm_virtual_network" "myterraformnetwork" {
     name                = "Sinergija19-vnet"
     address_space       = ["10.0.0.0/24"]
     location            = "westeurope"
-    resource_group_name = "azurerm_resource_group.myterraformgroup.name"
+    resource_group_name = "${azurerm_resource_group.myterraformgroup.name}"
 
     tags = {
         environment = "Terraform Demo"
@@ -23,8 +23,8 @@ resource "azurerm_virtual_network" "myterraformnetwork" {
 # Create subnet
 resource "azurerm_subnet" "myterraformsubnet" {
     name                 = "default"
-    resource_group_name  = "azurerm_resource_group.myterraformgroup.name"
-    virtual_network_name = "azurerm_virtual_network.myterraformnetwork.name"
+    resource_group_name  = "${azurerm_resource_group.myterraformgroup.name}"
+    virtual_network_name = "${azurerm_virtual_network.myterraformnetwork.name}"
     address_prefix       = "10.0.0.0/24"
 }
 
@@ -32,7 +32,7 @@ resource "azurerm_subnet" "myterraformsubnet" {
 resource "azurerm_public_ip" "myterraformpublicip" {
     name                         = "myPublicIP"
     location                     = "westeurope"
-    resource_group_name          = "azurerm_resource_group.myterraformgroup.name"
+    resource_group_name          = "${azurerm_resource_group.myterraformgroup.name}"
     allocation_method            = "Dynamic"
 
     tags = {
@@ -44,7 +44,7 @@ resource "azurerm_public_ip" "myterraformpublicip" {
 resource "azurerm_network_security_group" "myterraformnsg" {
     name                = "Server2016Docker-nsg"
     location            = "westeurope"
-    resource_group_name = "azurerm_resource_group.myterraformgroup.name"
+    resource_group_name = "${azurerm_resource_group.myterraformgroup.name}"
     
     security_rule {
         name                       = "RDP"
@@ -106,7 +106,7 @@ resource "random_id" "randomId" {
 
 resource "azurerm_storage_account" "mystorageaccount" {
     name                = "diag${random_id.randomId.hex}"
-    resource_group_name = "azurerm_resource_group.myterraformgroup.name"
+    resource_group_name = "${azurerm_resource_group.myterraformgroup.name}"
     location            = "westeurope"
     account_replication_type = "LRS"
     account_tier = "Standard"
@@ -120,7 +120,7 @@ resource "azurerm_storage_account" "mystorageaccount" {
 resource "azurerm_virtual_machine" "myterraformvm" {
     name                  = "2016Docker"
     location              = "westeurope"
-    resource_group_name   = "azurerm_resource_group.myterraformgroup.name"
+    resource_group_name   = "${azurerm_resource_group.myterraformgroup.name}"
     network_interface_ids = ["${azurerm_network_interface.myterraformnic.id}"]
     vm_size               = "Standard_D2S_v3"
 
@@ -154,7 +154,7 @@ resource "azurerm_virtual_machine" "myterraformvm" {
     
     boot_diagnostics {
         enabled = "false"
-        storage_uri = "azurerm_storage_account.mystorageaccount.primary_blob_endpoint"
+        storage_uri = "${azurerm_storage_account.mystorageaccount.primary_blob_endpoint}"
         }
 
     tags = {
